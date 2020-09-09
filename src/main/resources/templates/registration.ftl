@@ -1,5 +1,4 @@
 <#import "parts/pageTemplate.ftl" as pt>
-
 <@pt.page>
     <form method="post">
         <input type="hidden" name="id"

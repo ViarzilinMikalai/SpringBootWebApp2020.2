@@ -6,22 +6,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/registration")
 public class RegistrationController {
 
     public final UserService userService;
 
-    @GetMapping
+    @GetMapping("/registration")
     public String form(
             @RequestParam(name = "editUser", required = false, defaultValue = "") User user,
             Model model
@@ -33,7 +29,7 @@ public class RegistrationController {
     }
 
 
-    @PostMapping
+    @PostMapping("/registration")
     public String addUser(
             @Valid User user,
             BindingResult bindingResult,
@@ -50,5 +46,21 @@ public class RegistrationController {
             userService.addUser(user);
             return "redirect:/animals";
         }
+    }
+
+
+
+    @GetMapping("/activate/{code}")
+    public String activate(Model model, @PathVariable String code){
+
+        boolean isActivated = userService.activateUser(code);
+
+        if(isActivated) {
+            model.addAttribute("message", "success");
+        } else {
+            model.addAttribute("message", "Activation code isn't found");
+        }
+
+        return "activation";
     }
 }

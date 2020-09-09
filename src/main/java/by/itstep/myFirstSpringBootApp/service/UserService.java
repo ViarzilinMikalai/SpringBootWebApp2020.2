@@ -4,15 +4,14 @@ import by.itstep.myFirstSpringBootApp.domain.Role;
 import by.itstep.myFirstSpringBootApp.domain.User;
 import by.itstep.myFirstSpringBootApp.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements UserDetailsService {
 
+    public final PasswordEncoder passwordEncoder;
     public final UserRepo userRepo;
     public final MailSenderService mailSenderService;
 
@@ -29,9 +29,9 @@ public class UserService implements UserDetailsService {
         user.setRoles(Collections.singleton(Role.USER));
         user.setActive(false);
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepo.save(user);
-
         sendMessage(user);
     }
 
@@ -58,7 +58,7 @@ public class UserService implements UserDetailsService {
 
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to animali clinic. Please visit next link http://localhost:8080/activate/%s",
+                            "Welcome to animal clinic. Please visit next link http://localhost:8080/activate/%s",
                     user.getUsername(),
                     user.getActivationCode()
             );
@@ -77,6 +77,7 @@ public class UserService implements UserDetailsService {
 
             userByCode.setActivationCode(null);
             userByCode.setActive(true);
+            userRepo.save(userByCode);
 
             return true;
         }
@@ -118,7 +119,8 @@ public class UserService implements UserDetailsService {
         }
 
         if(!StringUtils.isEmpty(password)){
-            user.setPassword(password);
+            user.setPassword(passwordEncoder.encode(password));
+
         }
 
         userRepo.save(user);
