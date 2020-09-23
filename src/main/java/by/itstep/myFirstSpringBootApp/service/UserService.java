@@ -99,33 +99,58 @@ public class UserService implements UserDetailsService {
                 user.getRoles().add(Role.valueOf(key));
             }
         }
-
         userRepo.save(user);
     }
 
-
-    public void updateProfile(User user, String password, String email){
-
-        String userEmail = user.getEmail();
-
-        boolean isChanged = (email != null && email.equals(userEmail) || userEmail != null && userEmail.equals(email));
-
-        if (isChanged){
-            user.setEmail(email);
-
-            if(!StringUtils.isEmpty(email)){
-                user.setActivationCode(UUID.randomUUID().toString());
-            }
+    public Map<String, String> changePassword(String oldPassword, String newPassword, String confirmPassword, User user) {
+        Map<String, String> errorMap = new HashMap<>();
+        if(!passwordEncoder.matches(oldPassword, user.getPassword())){
+            errorMap.put("oldPasswordError", "Password incorrect");
+        }
+        if(newPassword.isEmpty()){
+            errorMap.put("newPasswordError", "New password must contain some");
+        }
+        if(!newPassword.equals(confirmPassword)){
+            errorMap.put("confirmPasswordError", "Password not similar");
         }
 
-        if(!StringUtils.isEmpty(password)){
-            user.setPassword(passwordEncoder.encode(password));
-
+        if (errorMap.isEmpty()){
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepo.save(user);
         }
 
-        userRepo.save(user);
-        if(isChanged){
+        return errorMap;
+    }
+
+    public Map<String, String> changeEmail(String oldEmail, String newEmail, User user) {
+        Map<String, String> emailError = new HashMap<>();
+
+        if(oldEmail.isEmpty()){
+            emailError.put("oldEmailEmpty", "Email must not be empty");
+        }
+        if (!oldEmail.equals(user.getEmail())){
+            emailError.put("oldEmailError", "Email not similar");
+        }
+
+        if (!newEmail.matches("[A-z0-9_-]+@[A-z0-9_-]+\\.[A-z0-9_-]+")){
+            emailError.put("newEmailError", "EMail is not correct");
+        }
+
+        if (userRepo.findByEmail(newEmail) != null){
+            emailError.put("notUniqueError", "Email isn't unique");
+        }
+
+        if(emailError.isEmpty()){
+            user.setEmail(newEmail);
+            user.setActivationCode(UUID.randomUUID().toString());
+            user.setActive(false);
+
+            userRepo.save(user);
             sendMessage(user);
         }
+
+        return emailError;
     }
+
+
 }

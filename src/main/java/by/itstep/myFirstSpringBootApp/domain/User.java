@@ -1,5 +1,6 @@
 package by.itstep.myFirstSpringBootApp.domain;
 
+import by.itstep.myFirstSpringBootApp.validation.PasswordConfirm;
 import by.itstep.myFirstSpringBootApp.validation.UniqueEmail;
 import by.itstep.myFirstSpringBootApp.validation.UniqueUsername;
 import lombok.Data;
@@ -20,6 +21,7 @@ import java.util.Set;
 @Table(name = "users")
 @UniqueEmail(message = "Enter the unique email")
 @UniqueUsername
+@PasswordConfirm
 public class User extends AbstractEntity implements UserDetails {
 
     @Id
@@ -31,6 +33,9 @@ public class User extends AbstractEntity implements UserDetails {
 
     @NotBlank
     private String password;
+
+    @Transient
+    private String passwordConfirm;
 
     @NotBlank
     @Email
@@ -57,6 +62,9 @@ public class User extends AbstractEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+    public boolean isAdmin(){
+        return roles.contains(Role.ADMIN);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

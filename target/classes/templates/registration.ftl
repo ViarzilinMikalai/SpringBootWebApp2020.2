@@ -13,13 +13,23 @@
             </div>
         </#if>
 
-        <input type="text" name="password"
+        <input type="password" name="password"
                class="form-control ${(passwordError??)?string('is-invalid', '')}"
                value="<#if user?? && user.password??>${user.password}</#if>"
                placeholder="Введите пароль">
         <#if passwordError??>
             <div class="invalid-feedback">
                 ${passwordError}
+            </div>
+        </#if>
+
+        <input type="password" name="passwordConfirm"
+               class="form-control ${(passwordConfirmError??)?string('is-invalid', '')}"
+               value="<#if user?? && user.passwordConfirm??>${user.passwordConfirm}</#if>"
+               placeholder="Подтвердите пароль">
+        <#if passwordConfirmError??>
+            <div class="invalid-feedback">
+                ${passwordConfirmError}
             </div>
         </#if>
 
@@ -70,9 +80,9 @@
 
     </form>
 
-<#list users as user>
-    <p>
-        <a href="/registration?editUser=${user.id}">${user.id}</a>
-    </p>
-</#list>
+<#--<#list users as user>-->
+<#--    <p>-->
+<#--        <a href="/registration?editUser=${user.id}">${user.id}</a>-->
+<#--    </p>-->
+<#--</#list>-->
 </@pt.page>
