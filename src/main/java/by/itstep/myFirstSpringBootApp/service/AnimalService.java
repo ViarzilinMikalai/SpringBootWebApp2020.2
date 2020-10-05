@@ -2,11 +2,14 @@ package by.itstep.myFirstSpringBootApp.service;
 
 
 import by.itstep.myFirstSpringBootApp.domain.Animal;
+import by.itstep.myFirstSpringBootApp.domain.User;
 import by.itstep.myFirstSpringBootApp.repository.AnimalRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 @Service
 public class AnimalService {
@@ -52,5 +55,9 @@ public class AnimalService {
 
     public Page<Animal> findAllAnimals(Pageable pageable) {
         return animalRepo.findAll(pageable);
+    }
+
+    public List<Animal> findAllAnimalsByOwner(User user) {
+        return animalRepo.findByAnimalOwner(user);
     }
 }

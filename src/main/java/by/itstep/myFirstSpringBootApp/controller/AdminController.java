@@ -43,5 +43,4 @@ public class AdminController {
         userService.saveUser(user, username, form);
         return "redirect:/users";
     }
-
 }

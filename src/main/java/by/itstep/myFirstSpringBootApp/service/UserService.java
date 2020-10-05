@@ -153,4 +153,8 @@ public class UserService implements UserDetailsService {
     }
 
 
+    public User findById(Long id) {
+        Optional<User> userOptional = userRepo.findById(id);
+        return userOptional.get();
+    }
 }

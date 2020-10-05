@@ -24,6 +24,7 @@
             <@log.logout/>
         <#else>
             Guest
+            <a href="/login">Log In</a>
         </#if>
 
     </div>

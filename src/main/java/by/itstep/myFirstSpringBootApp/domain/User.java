@@ -4,7 +4,10 @@ import by.itstep.myFirstSpringBootApp.validation.PasswordConfirm;
 import by.itstep.myFirstSpringBootApp.validation.UniqueEmail;
 import by.itstep.myFirstSpringBootApp.validation.UniqueUsername;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,12 +19,15 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "users")
 @UniqueEmail(message = "Enter the unique email")
 @UniqueUsername
 @PasswordConfirm
+//@ToString(exclude = "usersAnimal")
+@NoArgsConstructor
 public class User extends AbstractEntity implements UserDetails {
 
     @Id
@@ -40,6 +46,9 @@ public class User extends AbstractEntity implements UserDetails {
     @NotBlank
     @Email
     private String email;
+
+    @OneToMany(mappedBy = "animalOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Animal> usersAnimal;
 
     private boolean active;
 

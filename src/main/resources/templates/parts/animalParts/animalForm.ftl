@@ -1,9 +1,4 @@
-<h2>Search</h2>
-<form method="get" action="animals">
-    <input type="text" name="nameFilter" value="${nameFilter!}">
-    <input type="text" name="speciesFilter" value="${speciesFilter!}">
-    <input type="submit" value="Search">
-</form>
+
 
 
 <h2>Add animal</h2>
@@ -27,6 +22,9 @@
     <input type="date" name="birth"
            class="form-control ${(birthError??)?string('is-invalid', '')}"
            value="<#if animal?? && animal.birth??>${animal.birth}</#if>">
+    <input type="text" name="animalOwner"
+           class="form-control ${(birthError??)?string('is-invalid', '')}"
+           value="<#if user??>${user.id}</#if>">
 
     <input type="submit" value="Submit">
 </form>

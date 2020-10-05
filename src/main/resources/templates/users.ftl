@@ -8,6 +8,7 @@
             <th>Name</th>
             <th>Role</th>
             <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -16,6 +17,9 @@
                 <td>${user.username}</td>
                 <td><#list user.roles as role>${role}<#sep>, </#list></td>
                 <td><a href="/users/${user.id}">edit</a></td>
+                <td>
+                    <a href="animals/addanimal/${user.id}">Add animal</a>
+                </td>
             </tr>
         </#list>
         </tbody>
